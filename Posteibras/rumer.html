@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<icon src="posteibrasicon.png"></icon>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #222; /* Cor de fundo cinza escuro */
+            color: #fff; /* Cor do texto branca */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #444; /* Cor de fundo cinza mais escuro */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none; /* Removendo a borda padrão */
+            border-radius: 20px; /* Borda bem arredondada */
+            background-color: #333; /* Cor de fundo cinza escuro */
+            color: #fff; /* Cor do texto branco */
+        }
+
+        button {
+            padding: 10px;
+            background-color: #ffaa00; /* Amarelo alaranjado */
+            color: #fff;
+            border: none;
+            border-radius: 50px; /* Borda bem redonda */
+            font-weight: bold; /* Texto em negrito */
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #cc8800; /* Cor mais escura ao passar o mouse */
+        }
+
+        .post {
+            background-color: #555; /* Cor de fundo cinza ainda mais escuro */
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #777; /* Borda cinza escuro */
+            border-radius: 5px;
+        }
+
+        .post p {
+            margin: 0;
+            color: #fff; /* Cor do texto branco */
+        }
+
+        .creatorText {
+            color: yellow;
+        }
+
+        /* Personalização da barra de rolagem para Chrome, Opera e Firefox */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #ffaa00; /* Cor amarela */
+            border-radius: 6px; /* Borda redonda */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #cc8800; /* Cor mais escura ao passar o mouse */
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: #333; /* Cor de fundo da barra de rolagem */
+        }
+
+        scrollbar-color: #ffaa00 #333;
+        scrollbar-width: thin;
+    </style>
+    <title>Posteibras</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Posteibras</h1>
+        <div id="posts"></div>
+        <input type="text" id="authorName" placeholder="Seu Nome" oninput="checkSpecialString()">
+        <textarea id="postText" placeholder="Insira seu post"></textarea>
+        <button onclick="addPost()">Enviar</button>
+
+        <!-- Elemento para exibir "Criador" -->
+    </div>
+
+    <script>
+        // Carregar posts do armazenamento local
+        window.onload = function() {
+            var storedPosts = JSON.parse(localStorage.getItem('forumPosts')) || [];
+            var postsContainer = document.getElementById('posts');
+
+            storedPosts.forEach(function(post) {
+                var postDiv = document.createElement('div');
+                postDiv.className = 'post';
+                var postAuthor = (post.author.trim() === "Criador") ? '<span class="creatorText">Criador</span>' : post.author;
+                postDiv.innerHTML = '<p><strong>' + postAuthor + '</strong> ' + post.text + '</p>';
+                postsContainer.appendChild(postDiv);
+            });
+        };
+
+        // Verificar a string especial ao digitar no campo de nome
+        function checkSpecialString() {
+            var authorNameInput = document.getElementById('authorName');
+            var creatorNameDiv = document.getElementById('creatorName');
+            var specialString = "dibaisid---??!??!?!?!?!??!))()()()()()()()()codigokkkkkkkkk=)(#%/&12345000todososzzzz";
+
+            if (authorNameInput.value.trim() === specialString) {
+                creatorNameDiv.style.display = 'block';
+            } else {
+                creatorNameDiv.style.display = 'none';
+            }
+        }
+
+        function addPost() {
+            var authorName = document.getElementById('authorName').value;
+            var postText = document.getElementById('postText').value;
+
+            if (authorName.trim() === '' || postText.trim() === '') {
+                alert('Por favor, insira seu nome e conteúdo do post.');
+                return;
+            }
+
+            // Se a string especial for detectada, definir o autor como "Criador"
+            var specialString = "dibaisid---??!??!?!?!?!??!))()()()()()()()()codigokkkkkkkkk=)(#%/&12345000todososzzzz";
+            var postAuthor = (authorName.trim() === specialString) ? '<span class="creatorText">Criador</span>' : authorName;
+
+            // Adicionar ":" apenas se não for o "Criador"
+            postAuthor = (postAuthor.trim() === "Criador") ? postAuthor : postAuthor + ":";
+
+            var post = {
+                author: postAuthor,
+                text: postText
+            };
+
+            // Salvar post no armazenamento local
+            var storedPosts = JSON.parse(localStorage.getItem('forumPosts')) || [];
+            storedPosts.push(post);
+            localStorage.setItem('forumPosts', JSON.stringify(storedPosts));
+
+            // Adicionar post à página
+            var postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            postDiv.innerHTML = '<p><strong>' + postAuthor + '</strong> ' + post.text + '</p>';
+            document.getElementById('posts').appendChild(postDiv);
+
+            // Limpar os campos após a postagem
+            document.getElementById('authorName').value = '';
+            document.getElementById('postText').value = '';
+        }
+    </script>
+</body>
+</html>
